@@ -10,13 +10,21 @@ permissions:
   id-token: write
 
 jobs:
-  Deploiement:
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
     steps:
       - name: Récupération du code
-        uses: actions/checkout@v3
-      - name: Déploiement vers GitHub Pages
-        uses: peaceiris/actions-gh-pages@v3
+        uses: actions/checkout@v4
+      - name: Configuration des Pages
+        uses: actions/configure-pages@v4
+      - name: Upload de l'artefact
+        uses: actions/upload-pages-artifact@v3
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: .
+          path: '.'
+      - name: Déploiement vers GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
+
